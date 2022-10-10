@@ -29,7 +29,7 @@ class Patient(models.Model):
     phone=models.IntegerField(null=False)
     email=models.EmailField(max_length=255)
     desc=models.TextField(null=False)
-    date_of_bith=models.DateField(null=False)
+    date_of_bith=models.DateField(null=True)
     last_visit_date=models.DateField(null=True)
     allergies=models.TextField(null=True)
     create_at=models.DateField(auto_now_add=True)

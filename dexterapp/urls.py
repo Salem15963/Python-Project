@@ -9,7 +9,6 @@ urlpatterns = [
     path('home',views.home),
     path('logout/',views.logout),
     path('patients',views.patients),
-    path('account',views.account),
-    path('appointment_validate', views.appointment_validate)
-
+      path('account',views.account),
+    path('appointment_validate', views.appointment_validate),
 ]
