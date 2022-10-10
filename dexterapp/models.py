@@ -30,7 +30,7 @@ class Patient(models.Model):
     email=models.EmailField(max_length=255)
     desc=models.TextField(null=False)
     date_of_bith=models.DateField(null=False)
-    last_visit_date=models.DateField(null=False)
+    last_visit_date=models.DateField(null=True)
     allergies=models.TextField(null=True)
     create_at=models.DateField(auto_now_add=True)
     update_at=models.DateField(auto_now=True)
@@ -38,6 +38,7 @@ class Patient(models.Model):
 
 
 class Appointment(models.Model):
+    national_id=models.IntegerField(default = None)
     start_time=models.DateField()
     end_time=models.DateField()
     title=models.CharField(max_length=255)
