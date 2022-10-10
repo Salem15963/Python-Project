@@ -34,7 +34,7 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
       <div class="container px-5">
-        <a class="navbar-brand" href="#page-top">Dexter</a>
+        <a class="navbar-brand" href="/home">Dexter</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -61,10 +61,12 @@
                     <div class="col-md-9">
                 <label> Clinic</label>
                 <select>
-                    <option>All</option>
-                    <option>omar</option>
+                  {% for clinic in clinic %}
+                    <option>{{clinic.name}}</option>
                 </select>
+                {% endfor %}
                     </div>
+
                 <div class="input-group col-md-3" >
                     <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
                     <button type="button" class="btn btn-outline-primary">search</button>
@@ -86,17 +88,19 @@
           </tr>
         </thead>
         <tbody>
+          {% for i in patients %}
           <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
-            <td>@mdo</td>
+            <th scope="row">{{i.id}}</th>
+            <td>{{i.update_at}}</td>
+            <td><a href="">{{i.first_name}} {{i.last_name}}</a></td>
+            <td>{{i.phone}}</td>
+            <td>{{i.clinic.name}}</td>
+            <td>{{i.date_of_bith}}</td>
             <td><a href=""></a>
             <a href=""></a>
         </td> 
           </tr>
+          {% endfor %}
      
         </tbody>
       </table>

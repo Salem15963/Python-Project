@@ -51,7 +51,27 @@ def logout(request):
 
 
 def patients(request):
-    return render(request,'patient.html')
+    context={
+            'patients':Patient.objects.all(),
+            'clinic':Clinic.objects.all(),
+        }   
+    return render(request,'all_patients.html',context)
+
+def patient(request):
+    return(request,'patient.html')
+
+def admin_dash(request):
+    return render(request,'registration.html')
+
+
+
+    request.session['first_name']=logged_user.first_name
+    request.session['id']=logged_user.id
+    request.session['last_name']=logged_user.last_name
+    request.session['role']=logged_user.role
+    request.session['phone']=logged_user.phone
+    request.session['clinic']=logged_user.clinic
+    request.session['date_of_bith']=logged_user.date_of_bith
 
 
 
