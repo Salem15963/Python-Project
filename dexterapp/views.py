@@ -3,6 +3,9 @@ from .models import  Doctor , Clinic , Patient   ,Appointment   , Payment
 from django.contrib import messages
 import re
 import bcrypt
+EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
+NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
+
 
 
 
@@ -73,6 +76,10 @@ def admin_dash(request):
     request.session['clinic']=logged_user.clinic
     request.session['date_of_bith']=logged_user.date_of_bith
 
+def account(request):
+
+    return render(request, 'main_account.html')
+
 
 
 def Clinic_validation(request):
@@ -102,7 +109,7 @@ def Clinic_validation(request):
         return redirect('/')
 # ______________________________________________________
 def patient_validate(request):
-    check = Patient.objects.filter(national_id = request.POST['national_id'])
+    check = Patient.objects.get(national_id = request.POST['national_id'])
     error = False
 
     if len(request.POST['first_name'])< 3:
@@ -141,11 +148,13 @@ def patient_validate(request):
         error = True
 
     if error == True:
+
         return redirect('/')
 
     elif error == False:
 
-        Patient.objects.create()
+        Patient.objects.create(first_name = request.POST['first_name'], last_name = request.POST['last_name'],
+                                national_id = request.POST['national_id'], email = request.POST['email'], phone = request.POST['phone'], desc = request.POST['desc'], date_of_birth = request.POST['date_of_birth'])
 
         messages.success(request, 'You have added anew pationt  succesfully ,Thank you and welcome to this our web', extra_tags = 'added')
         
@@ -154,6 +163,9 @@ def patient_validate(request):
 def appointment_validate(request):
     # check = Patient.objects.filter(national_id = request.POST['national_id'])
     error = False
+    if len(request.POST['national_id']) != 9 :
+        messages.error(request,'Please enter a valid national id', extra_tags = 'national_id' )
+        error = True
 
     if len(request.POST['start_time'])< 1:
         messages.error(request,'Please enter a start date', extra_tags = 'start_time' )
@@ -163,24 +175,24 @@ def appointment_validate(request):
         messages.error(request,'Please enter a end date', extra_tags = 'end_time' )
         error = True
     
-    if len(request.POST['title'])==0:
-        messages.error(request,'Please Enter the title  for this appointment',extra_tags='appointment_title')
-        error=True
+    # if len(request.POST['title'])==0:
+    #     messages.error(request,'Please Enter the title  for this appointment',extra_tags='appointment_title')
+    #     error=True
     
     # if check:
     #     messages.error(request,'Pationt with this national_id has already been registered', extra_tags = 'national_id')
     #     error = True
 
     if error == True:
-        return redirect('/')
+        return redirect('/account')
 
     elif error == False:
-
-        Appointment.objects.create()
+        patient = Patient.objects.get(national_id = request.POST['national_id'])
+        Appointment.objects.create(start_time = request.POST['start_time'], end_time = request.POST['end_time'], patient_appoint = patient, doctor_appoint = Doctor.objects.get(id = request.session['id']))
 
         messages.success(request, 'You have added anew appointment  succesfully ,Thank you and welcome to this our web', extra_tags = 'added')
         
-        return redirect('/')
+        return redirect('/account')
 # _____________________________________________________________________________
 
 def payment_validate(request):
