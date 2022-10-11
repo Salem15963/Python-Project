@@ -2,6 +2,7 @@ from django.shortcuts import render ,redirect
 from .models import  Doctor , Clinic , Patient   ,Appointment   , Payment
 from django.contrib import messages
 import re
+from datetime import datetime, date
 import bcrypt
 EMAIL_REGEX = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
 NAME_REGEX = re.compile(r'^[a-zA-Z]+$')
@@ -40,7 +41,7 @@ def login(request):
     request.session['id']=logged_user.id
     request.session['last_name']=logged_user.last_name
     request.session['role']=logged_user.role
-    return redirect('/home')
+    return redirect('/account')
 
 def home(request):
     context={
@@ -109,8 +110,10 @@ def Clinic_validation(request):
         return redirect('/')
 # ______________________________________________________
 def patient_validate(request):
-    check = Patient.objects.get(national_id = request.POST['national_id'])
+    # check = Patient.objects.get(national_id = request.POST['national_id'])
+    check = True
     error = False
+
 
     if len(request.POST['first_name'])< 3:
         messages.error(request,'First Name must at laest contain two characters!', extra_tags = 'fn_error' )
@@ -130,7 +133,7 @@ def patient_validate(request):
     if len(request.POST['national_id'])!=9:
         messages.error(request,'The national id must be 9 digites!!',extra_tags='national_id')
         error=True
-    if (request.POST['gender'])!='F' or (request.POST['gender'])!='M':
+    if (request.POST['gender'])!='female' or (request.POST['gender'])!='male':
          messages.error(request,'The gender must be only mail or femail',extra_tags='gender')
          error=True
     if len(request.POST['phone'])!=10:
@@ -142,6 +145,10 @@ def patient_validate(request):
     if len(request.POST['desc'])<1:
          messages.error(request,'plese enter any description  ', extra_tags = 'desc')
          error=True
+    if request.POST['birth_date'] > str(datetime.now()):
+        messages.error(request,"Birth date must be in the past!",  extra_tags = 'birth_error')
+        error=True
+        
     
     if check:
         messages.error(request,'Pationt with this national_id has already been registered', extra_tags = 'national_id')
@@ -149,16 +156,17 @@ def patient_validate(request):
 
     if error == True:
 
-        return redirect('/')
+        return redirect('/account')
 
     elif error == False:
 
         Patient.objects.create(first_name = request.POST['first_name'], last_name = request.POST['last_name'],
-                                national_id = request.POST['national_id'], email = request.POST['email'], phone = request.POST['phone'], desc = request.POST['desc'], date_of_birth = request.POST['date_of_birth'])
+                                national_id = request.POST['national_id'], email = request.POST['email'], phone = request.POST['phone'], desc = request.POST['desc'], date_of_birth = request.POST['date_of_birth']
+                                ,clinic = Clinic.objects.get(name = request.POST['clinic']))
 
         messages.success(request, 'You have added anew pationt  succesfully ,Thank you and welcome to this our web', extra_tags = 'added')
         
-        return redirect('/')
+        return redirect('/account')
 # ______________________________________________________________________________
 def appointment_validate(request):
     # check = Patient.objects.filter(national_id = request.POST['national_id'])
