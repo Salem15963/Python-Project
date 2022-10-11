@@ -41,7 +41,7 @@ def login(request):
     request.session['id']=logged_user.id
     request.session['last_name']=logged_user.last_name
     request.session['role']=logged_user.role
-    return redirect('/home')
+    return redirect('/account')
 
 def home(request):
     context={
