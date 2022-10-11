@@ -68,6 +68,9 @@ def admin_dash(request):
 
 
 
+
+
+
     request.session['first_name']=logged_user.first_name
     request.session['id']=logged_user.id
     request.session['last_name']=logged_user.last_name
@@ -77,8 +80,11 @@ def admin_dash(request):
     request.session['date_of_bith']=logged_user.date_of_bith
 
 def account(request):
-
-    return render(request, 'main_account.html')
+    context={
+            'patients':Patient.objects.all(),
+            'clinic':Clinic.objects.all(),
+    }
+    return render(request, 'main_account.html',context)
 
 
 
