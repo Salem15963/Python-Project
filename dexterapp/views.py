@@ -61,6 +61,13 @@ def patients(request):
         }   
     return render(request,'all_patients.html',context)
 
+def payments(request):
+    # context={
+    #         'patient':Patient.objects.all(),
+    #         'clinic':Clinic.objects.all(),
+    #     }   
+    return render(request,'all_payments.html')
+
 def patient(request):
     return(request,'patient.html')
 
